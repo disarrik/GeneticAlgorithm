@@ -1,13 +1,15 @@
 #include "Population.h"
 #include <vector>
+#include <iostream>
+#include <ctime>
 
 using namespace std;
 
 int fitness(vector<vector<int>> genom) {
 	int count = 0;
-	for (int i = 0; i < genom.size(); i++)
+	for (unsigned int i = 0; i < genom.size(); i++)
 	{
-		for (int j = 0; j < genom[i].size(); j++)
+		for (unsigned int j = 0; j < genom[i].size(); j++)
 		{
 			count += genom[i][j];
 		}
@@ -16,7 +18,9 @@ int fitness(vector<vector<int>> genom) {
 }
 
 int main() {
+	srand(time(0));
+	setlocale(LC_ALL, "Russian");
 	Population population(10, 5, 3, 7, 20, fitness);
-	population.NextGeneration(10);
-	population.show();
+	population.NextGeneration(4000);
+	population.showBest();
 }

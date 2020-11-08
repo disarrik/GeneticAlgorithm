@@ -1,45 +1,8 @@
 #include "Population.h"
-#include <vector>
 #include <ctime>
 #include <iostream>
 
 using namespace std;
-
-
-//---------------------------------определение класса Population с прототипами----------------------------
-class Population
-{
-	class Specie;
-	int speciesAmount;
-	int refreshingAmount;
-	int chromosomesAmount;
-	int genesAmount;
-	int mutationChance;
-	int (*fitness)(vector<vector<int>>);
-	vector<Specie*> allSpecies;
-	void sort();
-public:
-	Population(int speciesAmount, int refreshingAmount, int сhromosomesAmount, int genesAmount, int mutationChance, int (*fitness)(vector<vector<int>>));
-	void NextGeneration(int steps = 0);
-	void show();
-	void showBest();
-};
-
-
-//-------------------------определение класса Species, вложенного в Population--------------------------------
-class Population::Specie {
-	int chromosomesAmount;
-	int genesAmount;
-	int mutationChance;
-	vector<vector<int>> chromosomes; //двумерный односвязанный список[хромосома][ген]
-public:
-	int fitnessMethod();
-	int (*fitness)(vector<vector<int>>);
-	Specie(int chromosomesAmount, int genesAmount, int mutationChance, int (*fitness)(vector<vector<int>>));
-	void show();
-	Specie crossingover(Specie second);
-};
-
 
 //------------------------определение методов класса Species, вложенного в Population--------------------------
 Population::Specie::Specie(int chromosomesAmount, int genesAmount, int mutationChance, int (*fitness)(vector<vector<int>>)) {
@@ -47,7 +10,6 @@ Population::Specie::Specie(int chromosomesAmount, int genesAmount, int mutationC
 	this->genesAmount = genesAmount;
 	this->fitness = fitness;
 	this->mutationChance = mutationChance;
-	srand(time(0));
 	chromosomes.resize(chromosomesAmount);
 	for (int i = 0; i < chromosomesAmount; i++)
 	{
@@ -73,7 +35,6 @@ void Population::Specie::show() {
 
 Population::Specie Population::Specie::crossingover(Specie second) {
 	Specie child(this->chromosomesAmount, this->genesAmount, this->mutationChance, fitness);
-	srand(time(0));
 	for (int i = 0; i < chromosomesAmount; i++)
 	{
 		int border = rand() % (genesAmount + 1);
@@ -100,14 +61,17 @@ int Population::Specie::fitnessMethod() {
 
 //------------------------определение методов класса Population--------------------------
 Population::Population(int speciesAmount, int refreshingAmount, int сhromosomesAmount, int genesAmount, int mutationChance, int (*fitness)(vector<vector<int>>)) {
+	srand(time(0));
 	this->speciesAmount = speciesAmount;
+	this->refreshingAmount = refreshingAmount;
 	this->chromosomesAmount = сhromosomesAmount;
+	this->mutationChance = mutationChance;
 	this->genesAmount = genesAmount;
 	this->fitness = fitness;
 	allSpecies.resize(speciesAmount);
 	for (int i = 0; i < speciesAmount; i++)
 	{
-		allSpecies[i] = new Specie(chromosomesAmount, genesAmount, mutationChance, fitness);
+		allSpecies[i] = new Specie(сhromosomesAmount, genesAmount, mutationChance, fitness);
 	}
 }
 
@@ -126,6 +90,7 @@ void Population::sort() {
 }
 
 void Population::show() {
+	sort();
 	for (int i = 0; i < speciesAmount; i++)
 	{
 		allSpecies[i]->show();
@@ -133,21 +98,21 @@ void Population::show() {
 	}
 }
 
-void Population::NextGeneration(int steps = 1) {
+void Population::NextGeneration(int steps) {
 	for (int i = 0; i < steps; i++)
 	{
 		sort();
-		for (int i = 0; i < speciesAmount / 2; i++)
+		for (int i = 0; i < (speciesAmount / 2); i++)
 		{
 			delete allSpecies[i];
 			allSpecies[i] = new Specie(chromosomesAmount, genesAmount, mutationChance, fitness);
-			*allSpecies[i] = allSpecies[rand() % (speciesAmount - 1) - speciesAmount / 2]->crossingover(*allSpecies[rand() % (speciesAmount - 1) - speciesAmount / 2]);
+			*allSpecies[i] = allSpecies[speciesAmount / 2 + (rand() % speciesAmount / 2)]->crossingover(*allSpecies[speciesAmount / 2 + (rand() % speciesAmount / 2)]);
 		}
 	}
 }
 
 void Population::showBest() {
 	sort();
-	cout << "Самый писпособленный вид:" << endl;
+	cout << "Самый приспособленный вид:" << endl;
 	allSpecies[speciesAmount - 1]->show();
 }
