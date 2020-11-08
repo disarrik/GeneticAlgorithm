@@ -1,7 +1,8 @@
 #pragma once
 
-namespace GA {
-	class Population;
-}
+
+class Population;
+
+
 
 

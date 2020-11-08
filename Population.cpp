@@ -15,11 +15,11 @@ class Population
 	int chromosomesAmount;
 	int genesAmount;
 	int mutationChance;
-	int (*fitness)();
+	int (*fitness)(vector<vector<int>>);
 	vector<Specie*> allSpecies;
 	void sort();
 public:
-	Population(int speciesAmount, int refreshingAmount, int сhromosomesAmount, int genesAmount, int mutationChance, int (*fitness)());
+	Population(int speciesAmount, int refreshingAmount, int сhromosomesAmount, int genesAmount, int mutationChance, int (*fitness)(vector<vector<int>>));
 	void NextGeneration(int steps = 0);
 	void show();
 	void showBest();
@@ -33,15 +33,16 @@ class Population::Specie {
 	int mutationChance;
 	vector<vector<int>> chromosomes; //двумерный односвязанный список[хромосома][ген]
 public:
-	int (*fitness)();
-	Specie(int chromosomesAmount, int genesAmount, int mutationChance, int (*fitness)());
+	int fitnessMethod();
+	int (*fitness)(vector<vector<int>>);
+	Specie(int chromosomesAmount, int genesAmount, int mutationChance, int (*fitness)(vector<vector<int>>));
 	void show();
 	Specie crossingover(Specie second);
 };
 
 
 //------------------------определение методов класса Species, вложенного в Population--------------------------
-Population::Specie::Specie(int chromosomesAmount, int genesAmount, int mutationChance, int (*fitness)()) {
+Population::Specie::Specie(int chromosomesAmount, int genesAmount, int mutationChance, int (*fitness)(vector<vector<int>>)) {
 	this->chromosomesAmount = chromosomesAmount;
 	this->genesAmount = genesAmount;
 	this->fitness = fitness;
@@ -80,7 +81,7 @@ Population::Specie Population::Specie::crossingover(Specie second) {
 		{
 			child.chromosomes[i][j] = second.chromosomes[i][j];
 			int reverse = child.chromosomes[i][j] == 0 ? 1 : 0;
-			child.chromosomes[i][j] = rand() % 100 > mutationChance ? child.chromosomes[i][j] : reverse;
+			child.chromosomes[i][j] = rand() % 100 > mutationChance  ? child.chromosomes[i][j] : reverse;
 		}
 		for (int j = genesAmount - border; j < border; j++)
 		{
@@ -92,9 +93,13 @@ Population::Specie Population::Specie::crossingover(Specie second) {
 	return child;
 }
 
+int Population::Specie::fitnessMethod() {
+	return this->fitness(this->chromosomes);
+}
+
 
 //------------------------определение методов класса Population--------------------------
-Population::Population(int speciesAmount, int refreshingAmount, int сhromosomesAmount, int genesAmount, int mutationChance, int (*fitness)()) {
+Population::Population(int speciesAmount, int refreshingAmount, int сhromosomesAmount, int genesAmount, int mutationChance, int (*fitness)(vector<vector<int>>)) {
 	this->speciesAmount = speciesAmount;
 	this->chromosomesAmount = сhromosomesAmount;
 	this->genesAmount = genesAmount;
@@ -111,7 +116,7 @@ void Population::sort() {
 	{
 		for (int j = 0; j < allSpecies.size() - i - 1; j++)
 		{
-			if (allSpecies[j]->fitness() > allSpecies[j+1]->fitness()) {
+			if (allSpecies[j]->fitnessMethod() > allSpecies[j+1]->fitnessMethod()) {
 				Specie* a = allSpecies[j];
 				allSpecies[j] = allSpecies[j + 1];
 				allSpecies[j + 1] = a;
