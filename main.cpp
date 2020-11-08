@@ -20,7 +20,7 @@ int fitness(vector<vector<int>> genom) {
 int main() {
 	srand(time(0));
 	setlocale(LC_ALL, "Russian");
-	Population population(10, 5, 3, 7, 20, fitness);
-	population.NextGeneration(4000);
+	Population population(30, 5, 9, 9, 1, fitness);
+	population.NextGeneration(800);
 	population.showBest();
 }

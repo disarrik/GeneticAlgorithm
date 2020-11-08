@@ -29,10 +29,10 @@ class Population::Specie {
 	int genesAmount;
 	int mutationChance;
 	vector<vector<int>> chromosomes; //двумерный односвязанный список[хромосома][ген]
-public:
-	int fitnessMethod();
 	int (*fitness)(vector<vector<int>>);
+public:
 	Specie(int chromosomesAmount, int genesAmount, int mutationChance, int (*fitness)(vector<vector<int>>));
+	int fitnessMethod();
 	void show();
 	Specie crossingover(Specie second);
 };
