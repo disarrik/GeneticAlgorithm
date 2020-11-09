@@ -18,9 +18,11 @@ int fitness(vector<vector<int>> genom) {
 }
 
 int main() {
-	srand(time(0));
+	srand((int) time(0));
 	setlocale(LC_ALL, "Russian");
-	Population population(30, 5, 9, 9, 1, fitness);
-	population.NextGeneration(800);
-	population.showBest();
+	Population population(4, 5, 3, 7, 0, fitness);
+	population.show();
+	cout << "-------------------" << endl;
+	population.NextGeneration(1);
+	population.show();
 }

@@ -36,7 +36,3 @@ public:
 	void show();
 	Specie crossingover(Specie second);
 };
-
-
-
-

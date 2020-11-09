@@ -22,9 +22,9 @@ Population::Specie::Specie(int chromosomesAmount, int genesAmount, int mutationC
 }
 
 void Population::Specie::show() {
-	for (int i = 0; i < chromosomes.size(); i++)
+	for (unsigned int i = 0; i < chromosomes.size(); i++)
 	{
-		for (int j = 0; j < chromosomes[i].size(); j++)
+		for (unsigned int j = 0; j < chromosomes[i].size(); j++)
 		{
 			cout << chromosomes[i][j] << " ";
 		}
@@ -37,18 +37,18 @@ Population::Specie Population::Specie::crossingover(Specie second) {
 	Specie child(this->chromosomesAmount, this->genesAmount, this->mutationChance, fitness);
 	for (int i = 0; i < chromosomesAmount; i++)
 	{
-		int border = rand() % (genesAmount + 1);
-		for (int j = 0; j < genesAmount - border; j++)
+		int border = rand() % genesAmount;
+		for (int j = 0; j < border; j++)
 		{
 			child.chromosomes[i][j] = second.chromosomes[i][j];
-			int reverse = child.chromosomes[i][j] == 0 ? 1 : 0;
-			child.chromosomes[i][j] = rand() % 100 > mutationChance  ? child.chromosomes[i][j] : reverse;
+			int reverse = (child.chromosomes[i][j] == 0 ? 1 : 0);
+			child.chromosomes[i][j] = rand() % 101 >= mutationChance  ? child.chromosomes[i][j] : reverse;
 		}
-		for (int j = genesAmount - border; j < border; j++)
+		for (int j = border; j < genesAmount; j++)
 		{
 			child.chromosomes[i][j] =  this->chromosomes[i][j];
-			int reverse = child.chromosomes[i][j] == 0 ? 1 : 0;
-			child.chromosomes[i][j] = rand() % 100 > mutationChance ? child.chromosomes[i][j] : reverse;
+			int reverse = (child.chromosomes[i][j] == 0 ? 1 : 0);
+			child.chromosomes[i][j] = rand() % 101 >= mutationChance ? child.chromosomes[i][j] : reverse;
 		}
 	}
 	return child;
